@@ -31,5 +31,7 @@ jobs:
           name: Push application Docker image
           command: |
             docker login -u ${DOCKER_USER} -p ${DOCKER_PASS}
-            docker build -t miyukki/${CIRCLE_PROJECT_REPONAME}:${CIRCLE_BRANCH} .
-            docker push miyukki/${CIRCLE_PROJECT_REPONAME}:${CIRCLE_BRANCH}
+            docker build -t miyukki/sample-web:${CIRCLE_BRANCH} .
+            docker push miyukki/sample-web:${CIRCLE_BRANCH}
+
+      - run: curl -s ${NOTIFY_URL}?project=sample-web&branch=${CIRCLE_BRANCH}&domain=sample-web-${CIRCLE_BRANCH}.pride.applest.net
