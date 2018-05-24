@@ -7,6 +7,7 @@ jobs:
     docker:
       # specify the version
       - image: circleci/golang:1.8
+      - image: docker:17.05.0-ce-git
 
       # Specify service dependencies here if necessary
       # CircleCI maintains a library of pre-built images
@@ -20,7 +21,15 @@ jobs:
     working_directory: /go/src/github.com/miyukki/go-hello-app
     steps:
       - checkout
+      - setup_remote_docker
 
       # specify any bash command here prefixed with `run: `
       - run: go get -v -t -d ./...
       - run: go test -v ./...
+
+      - deploy:
+        name: Push application Docker image
+        command: |
+          docker login -u ${DOCKER_USER} -p ${DOCKER_PASS}
+          docker build -t miyukki/${CIRCLE_PROJECT_REPONAME}:${CIRCLE_BRANCH} .
+          docker push miyukki/${CIRCLE_PROJECT_REPONAME}:${CIRCLE_BRANCH}
